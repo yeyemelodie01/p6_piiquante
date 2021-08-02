@@ -13,3 +13,10 @@ const PORT = 8080;
 app.listen(PORT, () => {
     console.log(`Server listening at http://localhost:${PORT}`);
 });
+
+const userRouter = require('./routes/user.routes');
+
+const userController = require('.controllers/user.controller');
+
+app.use('/users', userRouter);
+app.use('/users', userController);
