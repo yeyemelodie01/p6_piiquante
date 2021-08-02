@@ -2,7 +2,7 @@
   "name": "backend",
   "version": "1.0.0",
   "main": "index.js",
-  "script": {
+  "scripts": {
     "server": "node server/index.js"
   },
   "dependencies": {
