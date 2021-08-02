@@ -20,3 +20,12 @@ const userController = require('.controllers/user.controller');
 
 app.use('/users', userRouter);
 app.use('/users', userController);
+
+mongoose.connect('mongodb+srv://melodieyeye:hMC6$T3ET3zn@bddproject.uiz3c.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+    {   useCreateIndex: true,
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    })
+    .then(() => console.log('Connexion à MongoDB réussie !'))
+    .catch(() => console.log('Connexion à MongoDB échouée !'));
+
