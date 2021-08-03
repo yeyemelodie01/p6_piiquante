@@ -1,5 +1,5 @@
 const http = require('http'); //constante http qui donne accès a l'objet http qui permet de creer le serveur
-const app = require('./app');
+const app = require('./index');
 
 const normalizePort = val => {
     const port = parseInt(val, 10);
