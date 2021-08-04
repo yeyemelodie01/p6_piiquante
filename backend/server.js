@@ -1,6 +1,9 @@
 require('dotenv').config();
 const express = require("express"); //constante http qui donne accès a l'objet http qui permet de creer le serveur
 const app = express();
+const body = require('body-parser');
+
+app.use(body());
 
 const normalizePort = val => {
     const port = parseInt(val, 10);
@@ -28,12 +31,13 @@ app.get('/', (req, res) => { // Crée une route GET et envoie une réponse initi
 const userRouter = require('./routes/user.routes');
 app.use('/users', userRouter);
 
+
 const mongoose = require("mongoose");
-mongoose.connect('mongodb+srv://melodieyeye:hMC6$T3ET3zn@bddproject.uiz3c.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
-    {
-        useCreateIndex: true,
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    })
-    .then(() => console.log('Connexion à MongoDB réussie !'))
-    .catch(() => console.log('Connexion à MongoDB échouée !'));
+const connect = normalizePort(process.env.MONGOOSE_CONNECT || '\'mongodb+srv://melodieyeye:hMC6$T3ET3zn@bddproject.uiz3c.mongodb.net/myFirstDatabase?retryWrites=true&w=majority\'');
+app.listen(connect,() => {
+      console.log('Connexion à MongoDB réussie !')
+      console.log('Connexion à MongoDB échouée !');
+});
+
+
+

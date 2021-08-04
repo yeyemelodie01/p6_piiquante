@@ -20,3 +20,4 @@ exports.readOneRequest = async (req, res) => {
         res.status(302).json(foundUser);
     }
 }
+
