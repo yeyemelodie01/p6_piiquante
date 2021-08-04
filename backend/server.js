@@ -1,9 +1,6 @@
 require('dotenv').config();
 const express = require("express"); //constante http qui donne accès a l'objet http qui permet de creer le serveur
 const app = express();
-const body = require('body-parser');
-
-app.use(body());
 
 const normalizePort = val => {
     const port = parseInt(val, 10);
@@ -31,13 +28,18 @@ app.get('/', (req, res) => { // Crée une route GET et envoie une réponse initi
 const userRouter = require('./routes/user.routes');
 app.use('/users', userRouter);
 
+const authRouter = require('./routes/auth.routes')
+app.use('/api/auth', authRouter);
+
+const sauceRouter = require('./routes/sauce.routes')
+app.use('/api/sauces', sauceRouter);
 
 const mongoose = require("mongoose");
-const connect = normalizePort(process.env.MONGOOSE_CONNECT || '\'mongodb+srv://melodieyeye:hMC6$T3ET3zn@bddproject.uiz3c.mongodb.net/myFirstDatabase?retryWrites=true&w=majority\'');
-app.listen(connect,() => {
-      console.log('Connexion à MongoDB réussie !')
-      console.log('Connexion à MongoDB échouée !');
-});
-
-
-
+mongoose.connect('mongodb+srv://'+process.env.DATABASE_USER+':'+process.env.DATABASE_PASSWORD+'@'+process.env.DATABASE_NAME,
+    {
+        useCreateIndex: true,
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    })
+    .then(() => console.log('Connexion à MongoDB réussie !'))
+    .catch(() => console.log('Connexion à MongoDB échouée !'));
