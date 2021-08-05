@@ -1,32 +1,41 @@
 const bcrypt = require('bcrypt');
-const user = require('../models/user.model');
+const saltRounds = 10;
+const userModel = require('../models/user.model');
 
 exports.signUpRequest = async (req, res) => {
-    // req.body est pour les demandes POST. Pensez au "corps du facteur".
-    // déstructure la valeur du nom du corps de la requête.
-    const {name} = req.body;
+    const {email, password} = req.body;
+    const foundUser = await userModel.find({email});
 
-    // vérifier si la base de données contient déjà ce nom.
-    const foundUser = await UserModel.find({name});
-
-    // si aucun utilisateur n'est trouvé, nous pouvons ajouter cet utilisateur à la base de données.
-    if (!foundUser || foundUser.length == 0) {
-        bcrypt.hash(req.body.password, 10)
-            .then(hash => {
-                const user = new user({
-                    email: req.body.email,
-                    password: hash
-                });
-                user.save()
-                    .then(() => res.status(201).json({message: 'Utilisateur crée !'}))
-                    .catch(error => res.status(400).json({error}));
-            })
-            .catch(error => res.status(500).json({error}));
+    if(!foundUser || foundUser.length === 0) {
+        const salt = bcrypt.genSaltSync(saltRounds);
+        const hash = bcrypt.hashSync(password, salt);
+        const user = new userModel({
+            email: email,
+            password : hash
+        });
+        const response = await user.save();
+        res.status(201).json(response);
+    } else {
+        res.status(409).json({message: "User already exists!"});
     }
 }
 
 exports.loginRequest = async (req, res) => {
-
-    res.status(200).json('login');
-    console.log('login')
+    userModel.findOne({email: req.body.email})
+        .then(user =>{
+            if(!user){
+                return res.status(409).json({message: "User not found"});
+            }else {
+                bcrypt.compare(req.body.password, user.password)
+                    .then(userValid =>{
+                        if (!userValid){
+                            return res.status(409).json({message: "incorrect password"});
+                        }else {
+                            res.status(201).json({
+                                userId: user._id,
+                            })
+                        }
+                    })
+            }
+        })
 }
