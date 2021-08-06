@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const userModel = require('../models/user.model');
+const jwt = require('njwt');
 
 exports.signUpRequest = async (req, res) => {
     const {email, password} = req.body;
