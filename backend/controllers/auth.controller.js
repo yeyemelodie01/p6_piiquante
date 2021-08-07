@@ -33,10 +33,9 @@ exports.loginRequest = async (req, res) => { // export de la fonction loginReque
     if (foundUser) { // si foundUser
         let checkPassword = bcrypt.compareSync(password, foundUser.password); // création de la variable checkPassword qui compare le mot de passe avec celui de foundUser.password
         if (checkPassword === true) { // si checkPassword est strictement vrai
-            /// TOKEN BLABLA
-            const claims = { iss: 'fun-with-jwts', sub: foundUser._id } // constante claims qui a pour valeur un objet avec l'URL du site et le ID de l'utilisateur dans notre base de donnée
-            const token = jwt.create(claims, op-secret-phrase') // constante token qui crée le token
-            token.setExpiration(new Date().getTime() + 60*1000) //expiration du token
+            const claims = { iss: 'localhost', sub: foundUser._id } // constante claims qui a pour valeur un objet avec l'URL du site et le ID de l'utilisateur dans notre base de donnée
+            const token = jwt.create(claims, process.env.SECRET) // constante token qui crée le token
+            token.setExpiration(new Date().getTime() + 60*1000) //expiration du token 1minute
 
             const userLoginInformation = { // constante userLoginInformation
                 userId: foundUser._id, // userId qui prend la valeur de foundUser._id
