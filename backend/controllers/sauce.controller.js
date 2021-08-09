@@ -1,6 +1,8 @@
+const sauceModel = require('../models/sauce.model');
+
 exports.sauceRequest = async (req, res) => {
+    const sauceUser = await sauceModel.find({userId});
     res.status(200).json('Nom de la sauce');
-    console.log('Nom de la sauce')
 }
 
 exports.sauceIdRequest = async (req, res) => {
