@@ -1,7 +1,8 @@
 const sauceModel = require('../models/sauce.model');
+const upload = require('../middleware/upload');
 
 exports.sauceRequest = async (req, res) => {
-    const sauceUser = await sauceModel.find({userId});
+    //const sauceUser = await sauceModel.find({userId});
     res.status(200).json('Nom de la sauce');
 }
 
