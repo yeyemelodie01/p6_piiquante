@@ -34,8 +34,6 @@ app.use('/api/auth', authRouter);
 const sauceRouter = require('./routes/sauce.routes')
 app.use('/api/sauces', sauceRouter);
 
-app.use('/api/uploads', sauceRouter);
-
 const mongoose = require("mongoose");
 mongoose.connect('mongodb+srv://'+process.env.DATABASE_USER+':'+process.env.DATABASE_PASSWORD+'@'+process.env.DATABASE_NAME,
     {
@@ -47,12 +45,4 @@ mongoose.connect('mongodb+srv://'+process.env.DATABASE_USER+':'+process.env.DATA
     .catch(() => console.log('Connexion à MongoDB échouée !'));
 
 
-import morgan from 'morgan';
-const multer = require('multer');
-const upload = multer({dest: 'uploads/'});
 
-app.use(express.json());
-app.use(express.urlencoded({extended: true}));
-app.use(morgan('dev'));
-
-app.use(express.static(__dirname, 'public'));
