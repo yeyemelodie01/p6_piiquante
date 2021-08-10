@@ -2,14 +2,15 @@ const express = require('express');
 const urlRoutes = express.Router();
 const controller = require('../controllers/sauce.controller');
 const upload = require('../middleware/upload');
+const {userAuth} = require('../middleware/auth');
 
 
-urlRoutes.get('/', controller.sauceRequest);
-urlRoutes.get('/:id', controller.sauceIdRequest);
-urlRoutes.post('/', upload, controller.sauceImgRequest);
-urlRoutes.put('/:id', upload, controller.sauceUpdateRequest);
-urlRoutes.delete('/:id', controller.sauceDeleteRequest);
-urlRoutes.post('/:id/like', controller.sauceLikeRequest);
+urlRoutes.get('/',userAuth, controller.sauceRequest);
+urlRoutes.get('/:id', userAuth, controller.sauceIdRequest);
+urlRoutes.post('/', userAuth, upload, controller.sauceImgRequest);
+urlRoutes.put('/:id', userAuth, upload, controller.sauceUpdateRequest);
+urlRoutes.delete('/:id',userAuth,  controller.sauceDeleteRequest);
+urlRoutes.post('/:id/like',userAuth, controller.sauceLikeRequest);
 
 
 module.exports = urlRoutes;

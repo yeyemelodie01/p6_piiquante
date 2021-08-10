@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt'); // importation du module bcrypt
 const saltRounds = 10; // controle le temps necessaire pour calculer un seul hash
 const userModel = require('../models/user.model'); // importation du fichier user.model
 const jwt = require('njwt'); // importation du module njwt
+const tokenAuth = require('jsonwebtoken');
 
 
 exports.signUpRequest = async (req, res) => { // export de la fonction signUpRequest avec pour valeur async parametre request et response
