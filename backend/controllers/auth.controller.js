@@ -2,7 +2,6 @@ const bcrypt = require('bcrypt'); // importation du module bcrypt
 const saltRounds = 10; // controle le temps necessaire pour calculer un seul hash
 const userModel = require('../models/user.model'); // importation du fichier user.model
 const jwt = require('njwt'); // importation du module njwt
-const tokenAuth = require('jsonwebtoken');
 
 
 exports.signUpRequest = async (req, res) => { // export de la fonction signUpRequest avec pour valeur async parametre request et response
@@ -36,7 +35,7 @@ exports.loginRequest = async (req, res) => { // export de la fonction loginReque
         if (checkPassword === true) { // si checkPassword est strictement vrai
             const claims = { iss: 'localhost', sub: foundUser._id } // constante claims qui a pour valeur un objet avec l'URL du site et le ID de l'utilisateur dans notre base de donnée
             const token = jwt.create(claims, process.env.SECRET) // constante token qui crée le token
-            token.setExpiration(new Date().getTime() + 60*1000) //expiration du token 1minute
+            token.setExpiration(new Date().getTime() + (60*60*1000)) //expiration du token 1minute
 
             const userLoginInformation = { // constante userLoginInformation
                 userId: foundUser._id, // userId qui prend la valeur de foundUser._id

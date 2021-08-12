@@ -1,4 +1,5 @@
-//const sauceModel = require('../models/sauce.model');
+const sauceModel = require('../models/sauce.model');
+
 
 exports.sauceRequest = async (req, res) => {
     //const sauceUser = await sauceModel.find({userId});
@@ -11,10 +12,24 @@ exports.sauceIdRequest = async (req, res) => {
     console.log('login')
 }
 
-exports.sauceImgRequest = async (req, res) => {
-
-    res.status(200).json('Image ajoutée');
-    console.log('login')
+exports.sauceAddRequest = async (req, res) => {
+    const sauceCreate = JSON.stringify(req.body.sauce);
+    const sauce = new sauceModel({
+        userId: sauceCreate.userId,
+        name: sauceCreate.name,
+        manufacturer: sauceCreate.manufacturer,
+        description: sauceCreate.description,
+        mainPepper: sauceCreate.mainPepper,
+        imageUrl: `http://localhost:3000/uploads/${req.file.filename}`,
+        heat: sauceCreate.heat,
+        likes: 0,
+        dislikes: 0,
+        usersLiked: [],
+        usersDisliked: [],
+    });
+    sauce.save()
+        .then(() => res.status(201).json({ message: 'Sauce enregistré !'}))
+        .catch(error => res.status(400).json({ error }));
 }
 
 exports.sauceUpdateRequest = async (req, res) => {
