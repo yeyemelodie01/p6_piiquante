@@ -34,9 +34,6 @@ app.use('/api/auth', authRouter);
 const sauceRouter = require('./routes/sauce.routes')
 app.use('/api/sauces', sauceRouter);
 
-const path = require('path');
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
 const mongoose = require("mongoose");
 mongoose.connect('mongodb+srv://'+process.env.DATABASE_USER+':'+process.env.DATABASE_PASSWORD+'@'+process.env.DATABASE_NAME,
     {
@@ -47,5 +44,6 @@ mongoose.connect('mongodb+srv://'+process.env.DATABASE_USER+':'+process.env.DATA
     .then(() => console.log('Connexion à MongoDB réussie !'))
     .catch(() => console.log('Connexion à MongoDB échouée !'));
 
-
+const path = require('path');
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 

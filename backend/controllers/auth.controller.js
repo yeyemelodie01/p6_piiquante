@@ -1,8 +1,7 @@
 const bcrypt = require('bcrypt'); // importation du module bcrypt
 const saltRounds = 10; // controle le temps necessaire pour calculer un seul hash
 const userModel = require('../models/user.model'); // importation du fichier user.model
-const jwt = require('njwt'); // importation du module njwt
-
+const jwt = require('jsonwebtoken'); // importation du module njwt
 
 exports.signUpRequest = async (req, res) => { // export de la fonction signUpRequest avec pour valeur async parametre request et response
     const {email, password} = req.body; //constantes variables email et password extraites de request.body
@@ -33,13 +32,15 @@ exports.loginRequest = async (req, res) => { // export de la fonction loginReque
     if (foundUser) { // si foundUser
         let checkPassword = bcrypt.compareSync(password, foundUser.password); // création de la variable checkPassword qui compare le mot de passe avec celui de foundUser.password
         if (checkPassword === true) { // si checkPassword est strictement vrai
-            const claims = { iss: 'localhost', sub: foundUser._id } // constante claims qui a pour valeur un objet avec l'URL du site et le ID de l'utilisateur dans notre base de donnée
-            const token = jwt.create(claims, process.env.SECRET) // constante token qui crée le token
-            token.setExpiration(new Date().getTime() + (60*60*1000)) //expiration du token 1minute
+            const token = jwt.sign(
+                { userId: foundUser._id },
+                process.env.SECRET,
+                { expiresIn: '24h' }
+            )
 
             const userLoginInformation = { // constante userLoginInformation
                 userId: foundUser._id, // userId qui prend la valeur de foundUser._id
-                token: token.compact(), //token qui prend la valeur de token.compact
+                token: token, //token qui prend la valeur de token.compact
             }
             res.status(302).json(userLoginInformation);// réponse avec le status 302 qui encode l'objet userLoginInformation
         } else {
