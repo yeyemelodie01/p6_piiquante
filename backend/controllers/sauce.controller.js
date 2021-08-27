@@ -66,9 +66,32 @@ exports.sauceDeleteRequest = async (req, res) => {
 }
 
 exports.sauceLikeRequest = async (req, res) => {
+    const {userId, like} = req.body;
+    const sauceId = req.params.id;
+    let sauce = await sauceModel.findOne({_id: sauceId});
+    let updateResult;
 
-    res.status(200).json('Image aimée');
-    console.log('login')
+    if (like === 1 && sauce.usersLiked.includes(userId) === false) {
+        sauceModel.updateOne({_id: sauceId},{$addToSet: { usersLiked : [userId]}})
+            .catch(err => res.status(404).json(err))
+
+        res.status(200).json("Ajout Reussi")
+    }
+
+    if(like === 0 && sauce.usersLiked.includes(userId)) {
+        sauceModel.updateOne({_id: sauceId},{$set: { usersLiked :  sauce.usersLiked.filter(item => item !== userId)}})
+            .catch(err => res.status(404).json(err))
+        res.status(200).json("Suppression Reussi")
+    }
+
+    if(like === -1 && sauce.usersDisliked.includes(userId)){
+    sauceModel.updateOne({_id: sauceId}, {$addToSet: { usersDisliked : [userId]}, $inc : {dislikes : +1 }})
+        .catch(err=> res.status(404).json(err))
+        res.status(200).json("Ajout dislike Reussi")
+    }
+
+
 }
+// trois conditions pour les likes on recoit comme valeur de likes : 0, 1 ou -1
 
 
