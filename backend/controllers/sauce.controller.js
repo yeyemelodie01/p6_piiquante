@@ -1,11 +1,11 @@
-const sauceModel = require('../models/sauce.model');
+const sauceModel = require('../models/sauce.model');// importation du fichier sauce.model
 const fs = require('fs'); // file système
 
 
-exports.sauceRequest = async (req, res) => {
-    sauceModel.find()
-        .then((sauce) => res.status(200).json(sauce))
-        .catch(error => res.status(400).json({ error }));
+exports.sauceRequest = async (req, res) => {// export de la fonction sauceRequest qui a pour valeur asynchrone qui a pour paramettre req et res
+    sauceModel.find()//on exécute une fonction callback (find) pour récupéré tous les éléments présent dans le tableau sauceModel
+        .then((sauce) => res.status(200).json(sauce))// reponse avec le statut 201 qui encode en json response
+        .catch(error => res.status(400).json({ error }));// retourne une erreur avec la réponse de status 400 qui encode un json erreur
 }
 
 exports.sauceIdRequest = async (req, res) => {
@@ -69,7 +69,6 @@ exports.sauceLikeRequest = async (req, res) => {
     const {userId, like} = req.body;
     const sauceId = req.params.id;
     let sauce = await sauceModel.findOne({_id: sauceId});
-    let updateResult;
 
     if (like === 1 && sauce.usersLiked.includes(userId) === false) {
         sauceModel.updateOne({_id: sauceId},{$addToSet: { usersLiked : [userId]}})
@@ -78,20 +77,25 @@ exports.sauceLikeRequest = async (req, res) => {
         res.status(200).json("Ajout Reussi")
     }
 
-    if(like === 0 && sauce.usersLiked.includes(userId)) {
-        sauceModel.updateOne({_id: sauceId},{$set: { usersLiked :  sauce.usersLiked.filter(item => item !== userId)}})
-            .catch(err => res.status(404).json(err))
-        res.status(200).json("Suppression Reussi")
+    if(like === 0) {
+        if (sauce.usersLiked.includes(userId)) {
+            sauceModel.updateOne({_id: sauceId}, {$set: {usersLiked: sauce.usersLiked.filter(item => item !== userId)}})
+                .catch(err => res.status(404).json(err))
+            res.status(200).json("Suppression Réussi")
+        }
+
+        if (sauce.usersDisliked.includes(userId)) {
+            sauceModel.updateOne({_id: sauceId}, {$set: {usersDisliked: sauce.usersDisliked.filter(item => item !== userId)}})
+                .catch(err => res.status(404).json(err))
+            res.status(200).json("Suppression Dislike Réussi")
+        }
     }
 
-    if(like === -1 && sauce.usersDisliked.includes(userId)){
-    sauceModel.updateOne({_id: sauceId}, {$addToSet: { usersDisliked : [userId]}, $inc : {dislikes : +1 }})
-        .catch(err=> res.status(404).json(err))
+    if(like === -1 && sauce.usersDisliked.includes(userId) === false){
+        sauceModel.updateOne({_id: sauceId}, {$addToSet: { usersDisliked : [userId]}})
+            .catch(err=> res.status(404).json(err))
         res.status(200).json("Ajout dislike Reussi")
     }
 
-
+    res.status(200).json(sauce);
 }
-// trois conditions pour les likes on recoit comme valeur de likes : 0, 1 ou -1
-
-

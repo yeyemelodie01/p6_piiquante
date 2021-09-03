@@ -42,7 +42,7 @@ exports.loginRequest = async (req, res) => { // export de la fonction loginReque
                 userId: foundUser._id, // userId qui prend la valeur de foundUser._id
                 token: token, //token qui prend la valeur de token.compact
             }
-            res.status(302).json(userLoginInformation);// réponse avec le status 302 qui encode l'objet userLoginInformation
+            res.status(200).json(userLoginInformation);// réponse avec le status 302 qui encode l'objet userLoginInformation
         } else {
             res.status(409).json({message: "User not found"}); // réponse avec le status 409 qui encode le message User not found
         }
