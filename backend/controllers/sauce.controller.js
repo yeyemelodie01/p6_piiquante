@@ -27,7 +27,7 @@ exports.sauceAddRequest = async (req, res) => {
             manufacturer: data.manufacturer,
             description: data.description,
             mainPepper: data.mainPepper,
-            imageUrl:  `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+            imageUrl:  `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`,
             heat: data.heat,
             likes: 0,
             dislikes: 0,
