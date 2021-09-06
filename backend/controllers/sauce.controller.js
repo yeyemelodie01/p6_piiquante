@@ -15,7 +15,7 @@ exports.sauceIdRequest = async (req, res) => {
 }
 
 exports.sauceAddRequest = async (req, res) => {
-    const data = req.body;
+    const data = JSON.parse(req.body.sauce);
     const dataSauce = await sauceModel.find({name:data.name});
     if(dataSauce.length > 0) {
         res.status(409).json({message: "sauce déja enregistrée"});
@@ -27,7 +27,7 @@ exports.sauceAddRequest = async (req, res) => {
             manufacturer: data.manufacturer,
             description: data.description,
             mainPepper: data.mainPepper,
-            imageUrl: data.imageUrl,
+            imageUrl:  `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
             heat: data.heat,
             likes: 0,
             dislikes: 0,

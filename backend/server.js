@@ -19,4 +19,3 @@ const port = normalizePort(process.env.BACK_END_SERVER_PORT || '3000'); // confi
 app.listen(port, () => {
     console.log(`Server listening at http://localhost:${port}`);
 });
-

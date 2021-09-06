@@ -1,8 +1,26 @@
-require('dotenv').config();
-const express = require("express");
-const app = express();
-const mongoose = require("mongoose");
+require('dotenv').config();         // load environment variables from the .env file into process.env
+const express =         require('express');                 // import express: node.js web framework
+const bodyParser =      require('body-parser');             // import body-parser: parse incoming request bodies in a middleware before handlers, available under the req.body property.
+const mongoose =        require('mongoose');                // import mongoose: ODM, a MongoDB object modeling tool designed to work in an asynchronous environment. Mongoose supports both promises and callbacks.
+const helmet =          require('helmet');                  // import helmet: help to secure Express apps by setting various HTTP headers.
+const path =            require('path');                    // import path: provides a way of working with directories and file paths. (line 44)
+const cors =            require('cors');                    // import cors: manage cross-origin resource sharing
+const rateLimit =       require('express-rate-limit');      // comme son nom l'indique: on va fixer un taux limite pour les requêtes.
 
+//constante à utiliser avec le package rateLimit
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,       // = 15 minutes
+    max: 100
+})
+
+// use express
+const app = express();
+
+app.use(limiter);
+
+app.use(helmet());
+
+app.use(cors({origin: 'http://localhost:'+process.env.BACK_END_SERVER_PORT}));
 
 mongoose.connect('mongodb+srv://'+process.env.DATABASE_USER+':'+process.env.DATABASE_PASSWORD+'@'+process.env.DATABASE_NAME,
     {
@@ -13,7 +31,7 @@ mongoose.connect('mongodb+srv://'+process.env.DATABASE_USER+':'+process.env.DATA
     .then(() => console.log('Connexion à MongoDB réussie !'))
     .catch(() => console.log('Connexion à MongoDB échouée !'));
 
-
+// manage cors
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
@@ -21,11 +39,14 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use(express.json()); // Indique à l'application Express d'utiliser le middleware JSON (pour que nous puissions voir les corps de nos requêtes en JSON).
-
-app.get('/', (req, res) => { // Crée une route GET et envoie une réponse initiale.
-    res.status(200).json({message: "Hello from my-express-app!"});
+// cross-scripting protection (helmet)
+app.use((req, res, next) => {
+    res.setHeader("X-XSS-Protection", "1; mode=block");
+    next();
 });
+
+// parsing all incoming requests
+app.use(bodyParser.json());
 
 const userRouter = require('./routes/user.routes');
 app.use('/users', userRouter);
@@ -36,7 +57,6 @@ app.use('/api/auth', authRouter);
 const sauceRouter = require('./routes/sauce.routes')
 app.use('/api/sauces', sauceRouter);
 
-const path = require('path');
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 module.exports = app;

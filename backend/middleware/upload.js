@@ -1,20 +1,22 @@
 const multer = require('multer');           // import package multer to manage images
 
+// Liste des formats d'images
+const MIME_TYPES = {                        //accepted types of images
+    'image/jpg': 'jpg',
+    'image/jpeg': 'jpg',
+    'image/png': 'png'
+};
+
+// Lieu d'enregistrement et nom du fichier
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, './uploads');
+    destination: (req, file, callback) => {
+        callback(null, 'uploads')
     },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + "--" + file.originalname);
+    filename: (req, file, callback) => {
+        const name = file.originalname.split(' ').join('_');
+        const extension = MIME_TYPES[file.mimetype];
+        callback(null, name + Date.now() + '.' + extension);
     }
 });
 
-const fileFilter = (req, file, cb) => {
-    if((file.mimetype).includes('jpeg') || (file.mimetype).includes('png') || (file.mimetype).includes('jpg')){
-        cb(null, true);
-    } else{
-        cb(null, false);
-    }
-};
-
-module.exports = multer({ storage: storage, fileFilter: fileFilter,}).single('photo');
+module.exports = multer({ storage }).single('image');
