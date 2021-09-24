@@ -1,9 +1,9 @@
 require('dotenv').config();// charge les variables d'environnement du fichier .env
 const express = require("express");// importation du module express
 const path = require('path');// importation du module path
-const helmet = require("helmet"); // importation du module helmet
+const helmet = require("helmet"); // importation du module helmet qui aide a sécuriser l'application express en définissant divers en-têtes HTTP
 const mongoose = require("mongoose");// importation du module mongoose
-const rateLimit = require("express-rate-limit"); //importation du module express rate limit
+const rateLimit = require("express-rate-limit"); //importation du module express rate limit qui permet de contrôler la vitesse à laquelle les demandes des utilisateurs sont traitées par notre serveur. Elle sécurise l'API
 
 const limiter = rateLimit({ // constante limiter qui a pour valeur rateLimit
     windowMs : 15 * 60 * 1000,// 15 minutes
@@ -12,9 +12,9 @@ const limiter = rateLimit({ // constante limiter qui a pour valeur rateLimit
 
 const app = express(); // utilisation du module express
 
-app.use(limiter); // application de la constante limiter
+app.use(limiter); // application de la constante limiter pour l'écoute maximum des requête
 
-app.use(helmet());
+app.use(helmet());// application de helmet pour la protection des en-tête HTTP
 
 const normalizePort = val => {
     const port = parseInt(val, 10);
@@ -48,7 +48,7 @@ app.use((req, res, next) => {
     next();
 });
 
-
+//CONNECTION MONGOOSE
 mongoose.connect('mongodb+srv://'+process.env.DATABASE_USER+':'+process.env.DATABASE_PASSWORD+'@'+process.env.DATABASE_NAME,
     {
         useCreateIndex: true,
@@ -60,13 +60,13 @@ mongoose.connect('mongodb+srv://'+process.env.DATABASE_USER+':'+process.env.DATA
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // gère la ressource images de manière statique à chaque fois qu'elle reçoit une requête vers la route /uploads
 
-const userRouter = require('./routes/user.routes'); //constante userRouter qui a pour valeur le chemin ver le fichier user.routes
+const userRouter = require('./routes/user.routes'); //constante userRouter qui a pour valeur le chemin vers le fichier user.routes
 app.use('/users', userRouter);
 
-const authRouter = require('./routes/auth.routes')//constante userRouter qui a pour valeur le chemin ver le fichier auth.routes
+const authRouter = require('./routes/auth.routes')//constante userRouter qui a pour valeur le chemin vers le fichier auth.routes
 app.use('/api/auth', authRouter);
 
-const sauceRouter = require('./routes/sauce.routes')//constante userRouter qui a pour valeur le chemin ver le fichier sauce.routes
+const sauceRouter = require('./routes/sauce.routes')//constante userRouter qui a pour valeur le chemin vers le fichier sauce.routes
 app.use('/api/sauces', sauceRouter);
 
 module.exports = app;
