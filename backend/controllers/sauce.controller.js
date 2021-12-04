@@ -65,37 +65,47 @@ exports.sauceDeleteRequest = async (req, res) => {
         .catch(error => res.status(500).json({ error }));
 }
 
-exports.sauceLikeRequest = async (req, res) => {
-    const {userId, like} = req.body;
-    const sauceId = req.params.id;
-    let sauce = await sauceModel.findOne({_id: sauceId});
-
-    if (like === 1 && sauce.usersLiked.includes(userId) === false) {
-        sauceModel.updateOne({_id: sauceId},{$addToSet: { usersLiked : [userId]}})
-            .catch(err => res.status(404).json(err))
-
-        res.status(200).json("Ajout Reussi")
-    }
+    exports.sauceLikeRequest = async (req, res) => {
+        const {userId, like} = req.body;
+        const sauceId = req.params.id;
+        let sauce = await sauceModel.findOne({_id: sauceId});
+    
+        if (like === 1 && sauce.usersLiked.includes(userId) === false) {
+            sauceModel.updateOne({_id: sauceId},{$addToSet: { usersLiked : [userId]}})
+                .catch(err => res.status(404).json(err))
+    
+            let likes = sauce.likes + 1;
+            sauceModel.updateOne({_id: sauceId}, {$set: { likes : likes }})
+                .catch(err=> res.status(404).json(err))
+        }
 
     if(like === 0) {
         if (sauce.usersLiked.includes(userId)) {
             sauceModel.updateOne({_id: sauceId}, {$set: {usersLiked: sauce.usersLiked.filter(item => item !== userId)}})
                 .catch(err => res.status(404).json(err))
-            res.status(200).json("Suppression Réussi")
+
+            let likes = sauce.likes - 1;
+            sauceModel.updateOne({_id: sauceId}, {$set: { likes : likes }})
+                .catch(err=> res.status(404).json(err))
         }
 
         if (sauce.usersDisliked.includes(userId)) {
             sauceModel.updateOne({_id: sauceId}, {$set: {usersDisliked: sauce.usersDisliked.filter(item => item !== userId)}})
                 .catch(err => res.status(404).json(err))
-            res.status(200).json("Suppression Dislike Réussi")
+            let dislikes = sauce.dislikes - 1;
+            sauceModel.updateOne({_id: sauceId}, {$set: { dislikes : dislikes }})
+                .catch(err=> res.status(404).json(err))
         }
     }
 
-    if(like === -1 && sauce.usersDisliked.includes(userId) === false){
-        sauceModel.updateOne({_id: sauceId}, {$addToSet: { usersDisliked : [userId]}})
-            .catch(err=> res.status(404).json(err))
-        res.status(200).json("Ajout dislike Reussi")
-    }
+        if(like === -1 && sauce.usersDisliked.includes(userId) === false){
+            sauceModel.updateOne({_id: sauceId}, {$addToSet: { usersDisliked : [userId]}})
+                .catch(err=> res.status(404).json(err))
+            let dislikes = sauce.dislikes + 1;
+            sauceModel.updateOne({_id: sauceId}, {$set: { dislikes : dislikes }})
+                .catch(err=> res.status(404).json(err))
+        }
 
+    sauce = await sauceModel.findOne({_id: sauceId});
     res.status(200).json(sauce);
 }
