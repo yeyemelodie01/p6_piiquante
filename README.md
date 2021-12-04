@@ -12,10 +12,10 @@ Sous Windows, ces installations nécessitent d'utiliser PowerShell en mode admin
 
 ## Fonctionnement ##
 
-Etape 1: En ligne de commande se rendre dans le dossier P6_Melodie_Yeye.
+Etape 1: En ligne de commande se rendre dans le dossier P6_Melodie_Yeye_code.
 
 Etape 2: Exécuter make install. Qui permettra d'installer les packages nécessaires au fonctionnement du projet.
 
-Etape 3: Rester dans le dossier P6_Melodie_Yeye et exécutez : make launch-front.
+Etape 3: Rester dans le dossier P6_Melodie_Yeye_code et exécutez : make launch-front.
 
-Etape 4: Ouvrir un autre onglet dans votre terminal. Se rendre dans le dossier P6_Melodie_Yeye et exécutez : make launch-back.
+Etape 4: Ouvrir un autre onglet dans votre terminal. Se rendre dans le dossier P6_Melodie_Yeye_code et exécutez : make launch-back.
